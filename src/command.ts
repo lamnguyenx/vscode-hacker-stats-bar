@@ -132,6 +132,22 @@ class Command {
       },
       this
     );
+
+    commands.registerCommand(
+      Commands.EnablePortSpeed,
+      () => {
+        setting.enableModule('portSpeed');
+      },
+      this
+    );
+
+    commands.registerCommand(
+      Commands.DisablePortSpeed,
+      () => {
+        setting.disableModule('portSpeed');
+      },
+      this
+    );
   }
 }
 

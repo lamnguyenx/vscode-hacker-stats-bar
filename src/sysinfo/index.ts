@@ -1,7 +1,10 @@
 import * as si from 'systeminformation';
 import * as os from 'os';
 import { getMacOsMemoryUsageInfo } from './memory';
+import { getPortSpeed } from './portSpeed';
 import { isDarwin, isWin32 } from '../utils';
+
+export { portSpeedInit, portSpeedRelease } from './portSpeed';
 
 export function siInit() {
   if (isWin32) {
@@ -88,7 +91,8 @@ export const sysinfoData = {
   loadavg: getLoadavg,
   networkSpeed: getNetworkSpeed,
   memoUsage: getMemoryUsage,
-  uptime: getUpTime
+  uptime: getUpTime,
+  portSpeed: getPortSpeed
 };
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -104,5 +108,6 @@ export const StatsModuleNameMap: { [key in StatsModule]: string } = {
   loadavg: 'Loadavg',
   networkSpeed: 'NetworkSpeed',
   memoUsage: 'MemoryUsage',
-  uptime: 'Uptime'
+  uptime: 'Uptime',
+  portSpeed: 'PortSpeed'
 };

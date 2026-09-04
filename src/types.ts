@@ -12,7 +12,9 @@ export enum Commands {
   'EnableMemoUsage' = 'StatsBar.EnableMemoUsage',
   'DisableMemoUsage' = 'StatsBar.DisableMemoUsage',
   'EnableUptime' = 'StatsBar.EnableUptime',
-  'DisableUptime' = 'StatsBar.DisableUptime'
+  'DisableUptime' = 'StatsBar.DisableUptime',
+  'EnablePortSpeed' = 'StatsBar.EnablePortSpeed',
+  'DisablePortSpeed' = 'StatsBar.DisablePortSpeed'
 }
 
 export enum ConfigurationKeys {
@@ -25,5 +27,8 @@ export enum ConfigurationKeys {
   LoadavgFormat = 'loadavg.format',
   NetworkSpeedFormat = 'networkSpeed.format',
   MemoUsageFormat = 'memoUsage.format',
-  UptimeFormat = 'uptime.format'
+  UptimeFormat = 'uptime.format',
+  PortSpeedSocketPath = 'portSpeed.socketPath',
+  PortSpeedName = 'portSpeed.name',
+  PortSpeedFormat = 'portSpeed.format'
 }

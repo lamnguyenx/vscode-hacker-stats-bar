@@ -1,8 +1,18 @@
 import { ExtensionContext, StatusBarAlignment, StatusBarItem, window } from 'vscode';
 import { ConfigurationKeys } from './types';
-import { sysinfoData, SysinfoData, StatsModule, StatsModuleNameMap, siInit, siRelease } from './sysinfo';
+import {
+  sysinfoData,
+  SysinfoData,
+  StatsModule,
+  StatsModuleNameMap,
+  siInit,
+  siRelease,
+  portSpeedInit,
+  portSpeedRelease
+} from './sysinfo';
 import { setting } from './setting';
 import { formatBytes, formatTimes, formatByDict, isDarwin } from './utils';
+import { PortSpeedData } from './sysinfo/portSpeed';
 
 type Await<T extends () => unknown> = T extends () => PromiseLike<infer U> ? U : ReturnType<T>;
 
@@ -14,7 +24,12 @@ class StatsBar {
   init(context: ExtensionContext) {
     this._context = context;
     siInit();
+    this.portSpeedInit();
     this.start();
+  }
+
+  private portSpeedInit() {
+    portSpeedInit(setting?.cfg?.get<string>(ConfigurationKeys.PortSpeedSocketPath) || '');
   }
 
   private start() {
@@ -129,18 +144,51 @@ class StatsBar {
 
         formatedData.text = formatByDict(setting.cfg?.get(ConfigurationKeys.UptimeFormat), dict);
       }
+    } else if (module === 'portSpeed') {
+      const res = rawRes as Await<SysinfoData['portSpeed']>;
+      if (res) {
+        const up = formatBytes(res.up);
+        const down = formatBytes(res.down);
+        const name = setting?.cfg?.get<string>(ConfigurationKeys.PortSpeedName) || 'Port';
+
+        const dict = {
+          name,
+          up: up.data,
+          'up-unit': up.unit + '/s',
+          down: down.data,
+          'down-unit': down.unit + '/s'
+        };
+
+        formatedData.text = formatByDict(setting.cfg?.get(ConfigurationKeys.PortSpeedFormat), dict);
+        formatedData.tooltip = this.formatPortSpeedTooltip(name, res);
+      }
     }
     return formatedData;
   }
 
+  private formatPortSpeedTooltip(name: string, data: PortSpeedData) {
+    if (data.flows.length === 0) {
+      return name;
+    }
+    const lines = data.flows.map(f => {
+      const proto = f.proto === 17 ? 'UDP' : 'TCP';
+      const up = formatBytes(f.up);
+      const down = formatBytes(f.down);
+      return `${f.localPort} -> ${f.remotePort} ${proto} \u2191 ${up.data} ${up.unit}/s \u2193 ${down.data} ${down.unit}/s`;
+    });
+    return `${name}\n${lines.join('\n')}`;
+  }
+
   onSettingUpdate() {
     this.cancelUpdate();
+    this.portSpeedInit();
     this.start();
   }
 
   cancelUpdate(isDeactivate = false) {
     if (isDeactivate) {
       siRelease();
+      portSpeedRelease();
     }
     if (this.timer) {
       clearInterval(this.timer);
