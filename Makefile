@@ -19,7 +19,7 @@ install-code-server: build
 
 vsix:
 	mkdir -p build
-	vsce pack -o $(VSIX)
+	npx --yes @vscode/vsce pack -o $(VSIX)
 
 clean:
 	rm -rf build
