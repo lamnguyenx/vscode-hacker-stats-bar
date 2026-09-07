@@ -1,9 +1,9 @@
-# vscode-stats-bar
+# Hacker Stats Bar
 
-[![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/njzy.stats-bar)](https://marketplace.visualstudio.com/items?itemName=njzy.stats-bar)
-[![Visual Studio Marketplace Last Updated](https://img.shields.io/visual-studio-marketplace/last-updated/njzy.stats-bar)](https://marketplace.visualstudio.com/items?itemName=njzy.stats-bar)
-[![Visual Studio Marketplace Rating](https://img.shields.io/visual-studio-marketplace/r/njzy.stats-bar)](https://marketplace.visualstudio.com/items?itemName=njzy.stats-bar)
-[![Visual Studio Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/njzy.stats-bar)](https://marketplace.visualstudio.com/items?itemName=njzy.stats-bar)
+[![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/lamnguyenx.hacker-stats-bar)](https://marketplace.visualstudio.com/items?itemName=lamnguyenx.hacker-stats-bar)
+[![Visual Studio Marketplace Last Updated](https://img.shields.io/visual-studio-marketplace/last-updated/lamnguyenx.hacker-stats-bar)](https://marketplace.visualstudio.com/items?itemName=lamnguyenx.hacker-stats-bar)
+[![Visual Studio Marketplace Rating](https://img.shields.io/visual-studio-marketplace/r/lamnguyenx.hacker-stats-bar)](https://marketplace.visualstudio.com/items?itemName=lamnguyenx.hacker-stats-bar)
+[![Visual Studio Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/lamnguyenx.hacker-stats-bar)](https://marketplace.visualstudio.com/items?itemName=lamnguyenx.hacker-stats-bar)
 
 A vscode extension to show system stats in status bar
 
