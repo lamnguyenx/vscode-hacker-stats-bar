@@ -1,5 +1,10 @@
 import * as net from 'net';
 import * as vscode from 'vscode';
+import { FRAME_SNAPSHOT, aggregate, consumeFrames, decodeSnapshot } from './protocol';
+import type { PortSpeedData } from './protocol';
+
+export { aggregate, consumeFrames, decodeSnapshot, encodeSnapshot } from './protocol';
+export type { PortFlow, PortSpeedData } from './protocol';
 
 /**
  * Client for the iftopd daemon (https://github.com/lamnt45/iftopd or
@@ -7,36 +12,14 @@ import * as vscode from 'vscode';
  * reads SNAPSHOT frames and exposes the aggregated up/down rates for the
  * ports matching the daemon's capture filter.
  *
- * Wire protocol (all integers little-endian):
- *   frame  = [len u16][type u8][payload...]      (len includes type + payload)
- *   snapshot payload = [ver u8][count u8] + count x 13 bytes:
- *     [local_port u16][remote_port u16][proto u8][up f32][down f32]
+ * The byte-level protocol lives in `./protocol` (vscode-free, unit-tested).
  */
 
 const DEFAULT_SOCKET = '/tmp/iftopd.sock';
 const RECONNECT_DELAY = 5000;
 
-const FRAME_SNAPSHOT = 0x10;
-const PROTO_VERSION = 1;
-const SNAPSHOT_ENTRY_SIZE = 13;
-const MAX_FRAME_LEN = 65535;
-
-export interface PortFlow {
-  localPort: number;
-  remotePort: number;
-  proto: number; // 6 = TCP, 17 = UDP
-  up: number; // bytes/sec
-  down: number; // bytes/sec
-}
-
-export interface PortSpeedData {
-  up: number;
-  down: number;
-  flows: PortFlow[];
-}
-
 let socket: net.Socket | null = null;
-let buffer = Buffer.alloc(0);
+let buffer: Buffer = Buffer.alloc(0);
 let reconnectTimer: NodeJS.Timeout | null = null;
 let socketPath = '';
 let lastData: PortSpeedData | undefined;
@@ -73,64 +56,6 @@ export async function getPortSpeed(): Promise<PortSpeedData | undefined> {
   return lastData;
 }
 
-/** Parses the SNAPSHOT frame payload into flows. */
-export function decodeSnapshot(payload: Buffer): PortFlow[] {
-  if (payload.length < 2) {
-    throw new Error('snapshot payload too short');
-  }
-  if (payload[0] !== PROTO_VERSION) {
-    throw new Error('unsupported protocol version');
-  }
-  const count = payload[1];
-  if (payload.length !== 2 + count * SNAPSHOT_ENTRY_SIZE) {
-    throw new Error('snapshot payload length mismatch');
-  }
-  const flows: PortFlow[] = [];
-  for (let i = 0; i < count; i++) {
-    const p = payload.slice(2 + i * SNAPSHOT_ENTRY_SIZE);
-    flows.push({
-      localPort: p.readUInt16LE(0),
-      remotePort: p.readUInt16LE(2),
-      proto: p[4],
-      up: p.readFloatLE(5),
-      down: p.readFloatLE(9)
-    });
-  }
-  return flows;
-}
-
-/** Sums up/down over all flows (top-N snapshot from the daemon). */
-export function aggregate(flows: PortFlow[]): PortSpeedData {
-  let up = 0;
-  let down = 0;
-  flows.forEach(f => {
-    up += f.up;
-    down += f.down;
-  });
-  return { up, down, flows };
-}
-
-/**
- * Consumes all complete frames from a byte buffer, appending them to out.
- * Returns the remaining (partial) bytes. Drops the buffer entirely if the
- * stream is desynchronized (invalid length).
- */
-export function consumeFrames(buf: Buffer, out: { type: number; payload: Buffer }[]): Buffer {
-  let rest = buf;
-  while (rest.length >= 3) {
-    const len = rest.readUInt16LE(0);
-    if (len < 1 || len > MAX_FRAME_LEN) {
-      return Buffer.alloc(0);
-    }
-    if (rest.length < 3 + len - 1) {
-      break;
-    }
-    out.push({ type: rest[2], payload: rest.slice(3, 3 + len - 1) });
-    rest = rest.slice(3 + len - 1);
-  }
-  return rest;
-}
-
 function ensureConnected() {
   if (socket || reconnectTimer) {
     return;
@@ -149,7 +74,8 @@ function connect() {
   });
 
   socket.on('data', chunk => {
-    buffer = buffer.length > 0 ? Buffer.concat([buffer, chunk]) : chunk;
+    const part: Buffer = typeof chunk === 'string' ? Buffer.from(chunk) : chunk;
+    buffer = buffer.length > 0 ? Buffer.concat([buffer, part]) : part;
     const frames: { type: number; payload: Buffer }[] = [];
     buffer = consumeFrames(buffer, frames);
     frames.forEach(f => {
