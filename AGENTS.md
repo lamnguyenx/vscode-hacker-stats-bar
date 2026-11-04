@@ -23,4 +23,4 @@ make typecheck-tests   # strict typecheck of tests/ + configs
 make test-e2e          # Playwright E2E against running code-server (CDP 9024)
 ```
 
-See `docs/important/how-to-test.md` for build/install and the oracle design.
+See `docs/important/testing/how-to-test.md` for build/install and the oracle design.

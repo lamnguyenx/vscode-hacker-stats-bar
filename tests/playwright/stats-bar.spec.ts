@@ -32,7 +32,7 @@ import {
  * the `portSpeed` values come from a deterministic fake iftopd daemon.
  *
  * Prereqs: code-server up with `lamnguyenx.hacker-stats-bar` installed (`make
- * build` + install + reload tab; see `docs/important/how-to-test.md`) and the
+ * build` + install + reload tab; see `docs/important/testing/how-to-test.md`) and the
  * CDP browser reachable on 9024.
  */
 

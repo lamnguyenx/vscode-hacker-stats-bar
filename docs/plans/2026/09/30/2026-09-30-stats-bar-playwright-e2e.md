@@ -8,8 +8,8 @@
 `src/test/**` (removed), `tests/units/*` (new), `tests/playwright/*` (new),
 `playwright.config.ts` (new), `tsconfig.tests.json` (new), `tsconfig.json`,
 `package.json`, `package-lock.json`, `Makefile`, `.gitignore`, `.vscodeignore`,
-`docs/important/how-to-test.md` (new), `AGENTS.md` (new), and the meta repo's
-`docs/important/how-to-test-all.md` reference map.
+`docs/important/testing/how-to-test.md` (new), `AGENTS.md` (new), and the meta repo's
+`docs/important/testing/how-to-test-all.md` reference map.
 
 ---
 
@@ -26,7 +26,7 @@ counterparts (`hacker-browser`, `hacker-path-picker`,
 | **Oracle** | Unique **format markers** (`SBCPU`, `SBNET`, …) to isolate our items in the shared status bar; a fake `iftopd` TCP daemon for exact `portSpeed` rates + tooltip; notification toasts + the real browser clipboard for `CopyIp` |
 | **Hygiene** | Global/machine settings snapshot/restore, verified by `md5sum` of `Machine/settings.json`; Playwright artifacts under gitignored `exp/playwright` |
 | **Legacy** | Removed the default `vscode-test`/mocha scaffold; its protocol tests were migrated into the bun units |
-| **Docs** | `docs/important/how-to-test.md`, `AGENTS.md`, meta reference map |
+| **Docs** | `docs/important/testing/how-to-test.md`, `AGENTS.md`, meta reference map |
 
 ---
 

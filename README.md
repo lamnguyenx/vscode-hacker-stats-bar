@@ -17,73 +17,26 @@ A vscode extension to show system stats in status bar
 - Support copy ip to clipboard
 - Support change loacation and refresh interval
 
-## Port Speed
+## Quick start
 
-Shows the aggregated upload/download of a port (or any BPF filter) captured
-by the [iftopd](https://github.com/lamnt45/iftopd) daemon (run as root or
-with `CAP_NET_RAW`; the extension itself needs no privileges):
-
-```sh
-sudo systemctl start iftopd    # daemon, filter e.g. "tcp port 8140"
+```bash
+make build      # npm install + compile + package *.vsix
+make install    # build + install into VS Code and code-server
 ```
 
-Then add `portSpeed` to `statsBar.modules` and configure:
+The extension settings are contributed by the extension itself; open **Settings**
+and search for `statsBar` to see them.
 
-- `statsBar.portSpeed.socketPath` — iftopd socket, default `/tmp/iftopd.sock`
-- `statsBar.portSpeed.name` — label shown on the bar, e.g. `Port 8140`
-- `statsBar.portSpeed.format` — display format (default: `${name}: $(arrow-up) ${up} ${up-unit} $(arrow-down) ${down} ${down-unit}`)
+## Docs
 
-The status bar item's tooltip lists the individual flows (local port ->
-remote port, proto, up/down). If the daemon is unreachable the entry shows
-`-` and a one-time notification is raised; the extension reconnects
-automatically every 5 seconds.
+### [Usage](docs/important/usage/)
 
-## Extension Settings
+- [Port speed](docs/important/usage/port-speed.md): set up the `iftopd` daemon, the `statsBar.portSpeed.*` settings, and the tooltip/fallback behavior.
+- [Display format](docs/important/usage/display-format.md): the `$(icon-name)` syntax and the placeholders each module exposes.
 
-You can visit this extension page in vscode to see detail
+### [Testing](docs/important/testing/)
 
-## Display Format
-
-You can use `$(icon-name)` to show icon, visit this site [https://microsoft.github.io/vscode-codicons/dist/codicon.html](https://microsoft.github.io/vscode-codicons/dist/codicon.html) to find icon name
-
-### Cpu Load
-
-- ${percent}
-
-### Loadavg
-
-- ${1}
-- ${5}
-- ${15}
-
-### Uptime
-
-- ${days}
-- ${hours}
-- ${minutes}
-
-### Network Speed
-
-- ${up}
-- ${up-unit}
-- ${down}
-- ${down-unit}
-
-### Port Speed
-
-- ${name}
-- ${up}
-- ${up-unit}
-- ${down}
-- ${down-unit}
-
-### Memory Usage
-
-- ${used}
-- ${total}
-- ${percent}
-- ${pressurePercent}
-- ${unit}
+- [How to test Hacker Stats Bar](docs/important/testing/how-to-test.md): the bun pure-logic checks, the committed Playwright suite, and the status-bar / `iftopd` oracles.
 
 ## Thanks
 

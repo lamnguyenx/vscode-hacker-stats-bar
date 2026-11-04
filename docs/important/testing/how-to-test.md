@@ -1,7 +1,7 @@
 # How to test Hacker Stats Bar
 
 Transferable rules live in the meta repo's
-[`docs/important/how-to-test-all.md`](../../../docs/important/how-to-test-all.md).
+[`docs/important/testing/how-to-test-all.md`](../../../../../docs/important/testing/how-to-test-all.md).
 This file is the **stats-bar-specific** pipeline: it is a status-bar extension,
 so the oracle is the workbench status-bar DOM, and the `portSpeed` module talks
 to the `iftopd` daemon (replaced by a deterministic fake in the suite).
@@ -18,7 +18,7 @@ to the `iftopd` daemon (replaced by a deterministic fake in the suite).
 
 The reference stack is code-server in Docker on nuc, driven from a CDP browser
 on pp. See the meta repo's
-[`dev-code-on-nuc-test-on-pp.md`](../../../docs/important/dev-code-on-nuc-test-on-pp.md)
+[`dev-code-on-nuc-test-on-pp.md`](../../../../../docs/important/dev-env/dev-code-on-nuc-test-on-pp.md)
 for the tunnels. The suite needs:
 
 - the CDP browser on `CDP_PORT` (default `9024`),
